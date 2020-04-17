@@ -473,6 +473,7 @@ class BaseTable extends React.PureComponent {
         rowRenderer={this.renderRow}
         onScroll={this._handleScroll}
         onRowsRendered={this._handleRowsRendered}
+        CustomScroll={this.props.scrollRenderer}
       />
     );
   }
@@ -545,7 +546,7 @@ class BaseTable extends React.PureComponent {
     if (!fixed || !resizingKey) return null;
 
     const columns = this.columnManager.getMainColumns();
-    const idx = columns.findIndex(column => column.key === resizingKey);
+    const idx = columns.findIndex((column) => column.key === resizingKey);
     const column = columns[idx];
     const { width: columnWidth, frozen } = column;
     const leftWidth = this.columnManager.recomputeColumnsWidth(columns.slice(0, idx));
@@ -1012,6 +1013,10 @@ BaseTable.propTypes = {
    * The renderer receives props `{ isScrolling, cells, columns, rowData, rowIndex, depth }`
    */
   rowRenderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]),
+  /**
+   * Custom row renderer
+   */
+  scrollRenderer: PropTypes.oneOfType([PropTypes.element]),
   /**
    * Class name for the table header, could be a callback to return the class name
    * The callback is of the shape of `({ columns, headerIndex }) => string`

@@ -68,6 +68,7 @@ class GridTable extends React.PureComponent {
       // omit from rest
       style,
       onScrollbarPresenceChange,
+      CustomScroll,
       ...rest
     } = this.props;
     const headerHeight = this._getHeaderHeight();
@@ -75,29 +76,32 @@ class GridTable extends React.PureComponent {
     const frozenRowsHeight = rowHeight * frozenRowCount;
     const cls = cn(`${classPrefix}__table`, className);
     const containerProps = containerStyle ? { style: containerStyle } : null;
+    const table = (
+      <Grid
+        {...rest}
+        className={`${classPrefix}__body`}
+        ref={this._setBodyRef}
+        data={data}
+        itemKey={this._itemKey}
+        frozenData={frozenData}
+        width={width}
+        height={Math.max(height - headerHeight - frozenRowsHeight, 0)}
+        rowHeight={rowHeight}
+        rowCount={data.length}
+        overscanRowCount={overscanRowCount}
+        columnWidth={bodyWidth}
+        columnCount={1}
+        overscanColumnCount={0}
+        useIsScrolling={useIsScrolling}
+        hoveredRowKey={hoveredRowKey}
+        onScroll={onScroll}
+        onItemsRendered={this._handleItemsRendered}
+        children={this.renderRow}
+      />
+    );
     return (
       <div role="table" className={cls} {...containerProps}>
-        <Grid
-          {...rest}
-          className={`${classPrefix}__body`}
-          ref={this._setBodyRef}
-          data={data}
-          itemKey={this._itemKey}
-          frozenData={frozenData}
-          width={width}
-          height={Math.max(height - headerHeight - frozenRowsHeight, 0)}
-          rowHeight={rowHeight}
-          rowCount={data.length}
-          overscanRowCount={overscanRowCount}
-          columnWidth={bodyWidth}
-          columnCount={1}
-          overscanColumnCount={0}
-          useIsScrolling={useIsScrolling}
-          hoveredRowKey={hoveredRowKey}
-          onScroll={onScroll}
-          onItemsRendered={this._handleItemsRendered}
-          children={this.renderRow}
-        />
+        {CustomScroll ? <CustomScroll>{table}</CustomScroll> : table}
         {headerHeight + frozenRowsHeight > 0 && (
           // put header after body and reverse the display order via css
           // to prevent header's shadow being covered by body
